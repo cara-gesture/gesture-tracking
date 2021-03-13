@@ -1,0 +1,23 @@
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  /* this makes sure the padding and the border is included in the box sizing */
+  box-sizing: border-box;
+}
+
+html body {
+  padding: 0;
+  margin: 0;
+}
+
+.labels {
+  background-color: white;
+  border: lightgrey 0.5px solid;
+  border-radius: 10px;
+  padding: 3px 4px 3px 4px;
+  font: 10px "Mulish", sans-serif;
+}

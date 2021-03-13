@@ -1,3 +1,21 @@
+# Gesture Standalone Tracking Page
+
+This standalone page offers a map view of a Gesture delivery in progress, using React, Styled Components, Google Maps API, and Firebase API.
+
+# Important!
+
+You will need to create a Google Maps API key, you can find instructions [here](https://developers.google.com/maps/documentation/javascript/get-api-key).
+
+You need to enable the Maps JavaScript API for your key to work with this app.
+
+Create a .env file and add your API key as REACT_APP_GOOGLE_API_KEY.
+
+# Very, Very Important!
+
+Environment variables are NOT confidential in create-react-app as it renders a static view. Please conceal API keys properly before production. You can read more [here](https://create-react-app.dev/docs/adding-custom-environment-variables/).
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
