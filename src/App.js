@@ -119,7 +119,7 @@ const App = () => {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: "10px",
+          margin: "10px 0 10px 0",
         }}
       >
         <Logo />
@@ -129,8 +129,10 @@ const App = () => {
         style={{
           display: "flex",
           flexDirection: "row",
-          height: "51vh",
-          marginTop: "10px",
+          width: "100%",
+          height: "50vh",
+          minWidth: "50vw",
+          minHeight: "50vh",
         }}
       >
         <MapContainer runLoc={runLoc} dropLoc={dropLoc} />
