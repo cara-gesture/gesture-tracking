@@ -32,12 +32,15 @@ const MapContainer = (props) => {
     let long = Number(arr[1]);
     return [lat, long];
   };
+
   useEffect(() => {
-    setRunLat(handleLoc(props.runLoc)[0]);
-    setRunLng(handleLoc(props.runLoc)[1]);
-    setDropLat(handleLoc(props.dropLoc)[0]);
-    setDropLng(handleLoc(props.dropLoc)[1]);
-  }, [props.runLoc, props.dropLoc]);
+    if (props.track === true) {
+      setRunLat(handleLoc(props.runLoc)[0]);
+      setRunLng(handleLoc(props.runLoc)[1]);
+      setDropLat(handleLoc(props.dropLoc)[0]);
+      setDropLng(handleLoc(props.dropLoc)[1]);
+    }
+  }, [props.runLoc, props.dropLoc, props.track]);
 
   var points = [
     { lat: runLat, lng: runLng },
@@ -49,7 +52,7 @@ const MapContainer = (props) => {
     bounds.extend(points[i]);
   }
 
-  return (
+  return props.track === true ? (
     <Map
       google={props.google}
       zoom={13}
@@ -103,6 +106,35 @@ const MapContainer = (props) => {
           lng: handleLoc(props.dropLoc)[1],
         }}
       />
+    </Map>
+  ) : (
+    <Map
+      google={props.google}
+      zoom={13}
+      styles={props.mapStyle}
+      disableDefaultUI={true}
+      style={mapStyles}
+      scrollwheel={false}
+      gestureHandling={"none"}
+      initialCenter={initCenter}
+    >
+      <Marker
+        label={{
+          text: "Currently not trackable",
+          style: { backgroundColor: "white" },
+          className: "noTrack",
+        }}
+        icon={{
+          url: PinBlue,
+          anchor: new google.maps.Point(17, 46),
+          scaledSize: new google.maps.Size(0, 0),
+          labelOrigin: new google.maps.Point(0, 40),
+        }}
+        position={{
+          lat: 40.749419041103586,
+          lng: -74.0017082356,
+        }}
+      ></Marker>
     </Map>
   );
 };

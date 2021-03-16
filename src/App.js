@@ -63,6 +63,18 @@ const StyledText = styled.div`
   margin: 0 5px 0 5px;
 `;
 
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  color: black;
+  border-bottom: 0.5px solid lightgrey;
+  padding: 0 5px 20px 5px;
+  font-size: 12px;
+  margin: 0 5px 0 5px;
+`;
+
 const Logo = () => {
   return <img src={logo} alt="Gesture Logo" height="50px" />;
 };
@@ -75,6 +87,15 @@ const App = () => {
   const [runLoc, setRunLoc] = useState("");
   const [dropLoc, setdropLoc] = useState("");
   const [statusText, setstatusText] = useState("");
+  const [track, setTrack] = useState(false);
+  const [couponAmount, setCouponAmount] = useState(0);
+  const [creditAmount, setCreditAmount] = useState(0);
+  const [tip, setTip] = useState(0);
+  const [productAmount, setProductAmount] = useState(0);
+  const [productName, setProductName] = useState("");
+  const [serviceFee, setServiceFee] = useState(0);
+  const [dropoffName, setDropoffName] = useState("");
+  const [text, setText] = useState("");
 
   setInterval(() => {
     fetch(
@@ -90,6 +111,31 @@ const App = () => {
       });
   }, 10000);
 
+  // const handleChange = (e) => {
+  //   setText(e.target.value);
+  //   console.log(text);
+  // };
+
+  const handleSubmit = (e) => {
+    fetch(
+      "https://us-central1-gesture-dev.cloudfunctions.net/track/notification",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: text }),
+      }
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("message", res.data.message);
+      })
+      .catch((err) => console.log("send message ERROR: ", err));
+    setText("");
+    e.preventDefault();
+  };
+
   useEffect(() => {
     fetch(
       "https://us-central1-gesture-dev.cloudfunctions.net/track/orders/order123"
@@ -102,8 +148,15 @@ const App = () => {
         setdelTime(res.data.deliveryTime);
         setRunLoc(res.data.runnerLocation); //res.data.runnerLocation
         setdropLoc(res.data.dropoffLocation);
-
+        setTrack(true);
         setstatusText(res.data.statusText);
+        setCouponAmount(res.data.couponAmount);
+        setCreditAmount(res.data.creditAmount);
+        setDropoffName(res.data.dropoffName);
+        setProductAmount(res.data.productAmount);
+        setProductName(res.data.productName);
+        setServiceFee(res.data.serviceFee);
+        setTip(res.data.tip);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -135,7 +188,7 @@ const App = () => {
           minHeight: "50vh",
         }}
       >
-        <MapContainer runLoc={runLoc} dropLoc={dropLoc} />
+        <MapContainer runLoc={runLoc} dropLoc={dropLoc} track={track} />
       </div>
       <StyledHeaderText>
         <img
@@ -173,10 +226,61 @@ const App = () => {
         {recName}
       </StyledText>
       <StyledHeaderText>
+        <b>Product Name</b>
+      </StyledHeaderText>
+      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+        {productName}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Drop Off Name</b>
+      </StyledHeaderText>
+      <StyledText>{dropoffName}</StyledText>
+      <StyledHeaderText>
+        <img
+          width="15"
+          height="15"
+          padding="0 20 0 0"
+          src="https://www.svgrepo.com/show/223681/receipt.svg"
+          alt="receipt"
+        />
+        &nbsp;
+        <b>Receipt</b>
+      </StyledHeaderText>
+      <StyledHeaderText>
         <b>Order Total</b>
       </StyledHeaderText>
       <StyledText style={{ border: "none", paddingBottom: "0px" }}>
         ${total}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Product Amount</b>
+      </StyledHeaderText>
+      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+        ${productAmount.toFixed(2)}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Coupon Amount</b>
+      </StyledHeaderText>
+      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+        ${couponAmount.toFixed(2)}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Credit Amount</b>
+      </StyledHeaderText>
+      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+        ${creditAmount.toFixed(2)}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Tip</b>
+      </StyledHeaderText>
+      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+        ${tip.toFixed(2)}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Service Fee</b>
+      </StyledHeaderText>
+      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+        ${serviceFee.toFixed(2)}
       </StyledText>
       <StyledHeaderText>
         <b>Order Time</b>
@@ -201,10 +305,15 @@ const App = () => {
         &nbsp;
         <b>Request Changes</b>
       </StyledHeaderText>
-      <StyledText>
-        <StyledInput></StyledInput>
-        <StyledButton>Submit</StyledButton>
-      </StyledText>
+      <StyledForm>
+        <StyledInput
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        ></StyledInput>
+        <StyledButton onClick={handleSubmit} type="submit">
+          Submit
+        </StyledButton>
+      </StyledForm>
     </StyledPage>
   );
 };

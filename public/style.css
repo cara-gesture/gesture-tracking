@@ -21,3 +21,11 @@ html body {
   padding: 3px 4px 3px 4px;
   font: 10px "Mulish", sans-serif;
 }
+
+.noTrack {
+  background-color: white;
+  border: lightgrey 0.5px solid;
+  border-radius: 5px;
+  padding: 30px 40px 30px 40px;
+  font: 14px "Mulish", sans-serif;
+}
