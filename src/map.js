@@ -17,15 +17,18 @@ const mapStyles = {
   margin: "none",
 };
 const MapContainer = (props) => {
-  const [initCenter] = useState({
-    lat: 40.749419041103586,
-    lng: -74.0017082356,
-  });
   const [runLat, setRunLat] = useState(40.749419041103586);
   const [runLng, setRunLng] = useState(-74.0017082356);
   const [dropLat, setDropLat] = useState(40.749419041103586);
   const [dropLng, setDropLng] = useState(-74.0017082356);
-
+  const [initCenter] = useState({
+    lat: runLat,
+    lng: runLng,
+  });
+  const [points, setPoints] = useState([
+    { lat: 40.749419041103586, lng: -74.0017082356 },
+    { lat: 40.749419041103586, lng: -74.0017082356 },
+  ]);
   const handleLoc = (loc) => {
     let arr = loc.split(",");
     let lat = Number(arr[0]);
@@ -39,13 +42,25 @@ const MapContainer = (props) => {
       setRunLng(handleLoc(props.runLoc)[1]);
       setDropLat(handleLoc(props.dropLoc)[0]);
       setDropLng(handleLoc(props.dropLoc)[1]);
+    } else {
+      setRunLat(40.749419041103586);
+      setRunLng(-74.0017082356);
+      setDropLat(40.749419041103586);
+      setDropLng(-74.0017082356);
     }
-  }, [props.runLoc, props.dropLoc, props.track]);
-
-  var points = [
-    { lat: runLat, lng: runLng },
-    { lat: dropLat, lng: dropLng },
-  ];
+    setPoints([
+      { lat: runLat, lng: runLng },
+      { lat: dropLat, lng: dropLng },
+    ]);
+  }, [
+    props.runLoc,
+    props.dropLoc,
+    props.track,
+    runLat,
+    runLng,
+    dropLat,
+    dropLng,
+  ]);
 
   var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < points.length; i++) {
