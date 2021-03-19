@@ -49,8 +49,8 @@ const MapContainer = (props) => {
       setDropLng(-74.0017082356);
     }
     setPoints([
-      { lat: runLat, lng: runLng },
-      { lat: dropLat, lng: dropLng },
+      { lat: runLat + 0.002, lng: runLng },
+      { lat: dropLat + 0.005, lng: dropLng },
     ]);
   }, [
     props.runLoc,
@@ -70,7 +70,7 @@ const MapContainer = (props) => {
   return props.track === true ? (
     <Map
       google={props.google}
-      zoom={13}
+      //zoom={14}
       styles={props.mapStyle}
       disableDefaultUI={true}
       style={mapStyles}
@@ -125,7 +125,7 @@ const MapContainer = (props) => {
   ) : (
     <Map
       google={props.google}
-      zoom={13}
+      //zoom={zoom}
       styles={props.mapStyle}
       disableDefaultUI={true}
       style={mapStyles}

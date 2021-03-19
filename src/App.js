@@ -97,21 +97,22 @@ const App = () => {
   const [dropoffName, setDropoffName] = useState("");
   const [text, setText] = useState("");
   const [orderTime, setOrderTime] = useState(0);
+  const [runnerId, setRunnerId] = useState("");
 
   if (track === true) {
     setInterval(() => {
       fetch(
-        "https://us-central1-gesture-dev.cloudfunctions.net/track/runners/runner123"
+        `https://us-central1-gesture-dev.cloudfunctions.net/track/runners/${runnerId}`
       )
         .then((res) => res.json())
         .then((res) => {
           if (res.data.runnerLocation !== runLoc) {
             //create clear interval logic
-
+            console.log("runner:", res.data);
             setRunLoc(res.data.runnerLocation);
           }
         });
-    }, 30000);
+    }, 3000);
   }
 
   // const handleChange = (e) => {
@@ -145,13 +146,14 @@ const App = () => {
     )
       .then((res) => res.json())
       .then((res) => {
+        console.log("order data", res.data);
         setsendName(res.data.senderName);
         setrecName(res.data.recipientName);
         setTotal(res.data.totalPrice);
         setdelTime(res.data.deliveryTime);
         setRunLoc(res.data.runnerLocation); //res.data.runnerLocation
         setdropLoc(res.data.dropoffLocation);
-        setTrack(res.data.track);
+        setTrack(true);
         setstatusText(res.data.statusText);
         setCouponAmount(res.data.couponAmount);
         setCreditAmount(res.data.creditAmount);
@@ -161,6 +163,7 @@ const App = () => {
         setServiceFee(res.data.serviceFee);
         setTip(res.data.tip);
         setOrderTime(res.data.timeOrderPlaced);
+        setRunnerId(res.data.runnerId);
       })
       .catch((err) => console.log(err));
   }, []);
