@@ -80,23 +80,23 @@ const Logo = () => {
 };
 
 const App = () => {
-  const [sendName, setsendName] = useState("");
-  const [recName, setrecName] = useState("");
-  const [total, setTotal] = useState(0);
-  const [delTime, setdelTime] = useState(0);
+  const [sendName, setsendName] = useState("-");
+  const [recName, setrecName] = useState("-");
+  const [total, setTotal] = useState("-");
+  const [delTime, setdelTime] = useState(null);
   const [runLoc, setRunLoc] = useState("");
   const [dropLoc, setdropLoc] = useState("");
-  const [statusText, setstatusText] = useState("");
+  const [statusText, setstatusText] = useState("-");
   const [track, setTrack] = useState(false);
-  const [couponAmount, setCouponAmount] = useState(0);
-  const [creditAmount, setCreditAmount] = useState(0);
-  const [tip, setTip] = useState(0);
-  const [productAmount, setProductAmount] = useState(0);
-  const [productName, setProductName] = useState("");
-  const [serviceFee, setServiceFee] = useState(0);
-  const [dropoffName, setDropoffName] = useState("");
+  const [couponAmount, setCouponAmount] = useState("-");
+  const [creditAmount, setCreditAmount] = useState("-");
+  const [tip, setTip] = useState("-");
+  const [productAmount, setProductAmount] = useState('"-');
+  const [productName, setProductName] = useState("-");
+  const [serviceFee, setServiceFee] = useState("-");
+  const [dropoffName, setDropoffName] = useState("-");
   const [text, setText] = useState("");
-  const [orderTime, setOrderTime] = useState(0);
+  const [orderTime, setOrderTime] = useState(null);
   const [runnerId, setRunnerId] = useState("");
 
   if (track === true) {
@@ -142,7 +142,7 @@ const App = () => {
 
   useEffect(() => {
     fetch(
-      "https://us-central1-gesture-dev.cloudfunctions.net/track/orders/order123"
+      "https://us-central1-gesture-dev.cloudfunctions.net/track/orders/testerid"
     )
       .then((res) => res.json())
       .then((res) => {
@@ -151,9 +151,13 @@ const App = () => {
         setrecName(res.data.recipientName);
         setTotal(res.data.totalPrice);
         setdelTime(res.data.deliveryTime);
-        setRunLoc(res.data.runnerLocation); //res.data.runnerLocation
-        setdropLoc(res.data.dropoffLocation);
-        setTrack(true);
+        res.data.runnerLocation !== null
+          ? setRunLoc(res.data.runnerLocation)
+          : setRunLoc(""); //res.data.runnerLocation
+        res.data.dropoffLocation !== null
+          ? setdropLoc(res.data.dropoffLocation)
+          : setdropLoc("");
+        res.data.track !== null ? setTrack(res.data.track) : setTrack(false);
         setstatusText(res.data.statusText);
         setCouponAmount(res.data.couponAmount);
         setCreditAmount(res.data.creditAmount);
@@ -249,27 +253,31 @@ const App = () => {
         <b>Order Time</b>
       </StyledHeaderText>
       <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        {Intl.DateTimeFormat(navigator.language, {
-          weekday: "long",
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-        }).format(new Date(orderTime))}
+        {orderTime
+          ? Intl.DateTimeFormat(navigator.language, {
+              weekday: "long",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }).format(new Date(orderTime))
+          : "-"}
       </StyledText>
       <StyledHeaderText>
         <b>Delivery Time</b>
       </StyledHeaderText>
       <StyledText>
-        {Intl.DateTimeFormat(navigator.language, {
-          weekday: "long",
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-        }).format(new Date(delTime))}
+        {delTime
+          ? Intl.DateTimeFormat(navigator.language, {
+              weekday: "long",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            }).format(new Date(delTime))
+          : "-"}
       </StyledText>
       <StyledHeaderText>
         <img
@@ -286,15 +294,17 @@ const App = () => {
         <b>Order Total</b>
       </StyledHeaderText>
       <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        ${total}
+        {typeof total == "number" ? `$${total.toFixed(2)}` : "-"}
       </StyledText>
       <StyledHeaderText>
         <b>Product Amount</b>
       </StyledHeaderText>
       <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        ${productAmount.toFixed(2)}
+        {typeof productAmount == "number"
+          ? `$${productAmount.toFixed(2)}`
+          : "-"}
       </StyledText>
-      {couponAmount === 0 || !couponAmount ? null : (
+      {couponAmount === "-" || !couponAmount ? null : (
         <>
           <StyledHeaderText>
             <b>Coupon Amount</b>
@@ -304,7 +314,7 @@ const App = () => {
           </StyledText>
         </>
       )}
-      {creditAmount === 0 || !creditAmount ? null : (
+      {creditAmount === "-" || !creditAmount ? null : (
         <>
           <StyledHeaderText>
             <b>Credit Amount</b>
@@ -314,17 +324,6 @@ const App = () => {
           </StyledText>
         </>
       )}
-      <StyledHeaderText>
-        <b>Tip</b>
-      </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        ${tip.toFixed(2)}
-      </StyledText>
-      <StyledHeaderText>
-        <b>Service Fee</b>
-      </StyledHeaderText>
-      <StyledText>${serviceFee.toFixed(2)}</StyledText>
-
       <StyledHeaderText>
         <img
           width="20"
