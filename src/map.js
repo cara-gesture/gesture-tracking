@@ -147,7 +147,7 @@ const MapContainer = (props) => {
         }}
         position={{
           lat: 40.749419041103586,
-          lng: -74.0017082356,
+          lng: -74.0001,
         }}
       ></Marker>
     </Map>

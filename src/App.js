@@ -2,6 +2,20 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MapContainer from "./map";
 import logo from "./logo.png";
+import deliveryImg from "./deliveryImg.png";
+import changesImg from "./changesImg.png";
+import orderImg from "./orderImg.png";
+import receiptImg from "./receiptImg.png";
+
+let search = window.location.search;
+let params = new URLSearchParams(search);
+let orderId = params.get("orderId");
+
+//this conditional is for testing only
+if (orderId === null) {
+  orderId = "testerid";
+}
+console.log("orderID", orderId);
 
 let tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
 console.log("timezone", tzName);
@@ -57,10 +71,9 @@ const StyledText = styled.div`
   justify-content: start;
   align-items: center;
   color: black;
-  border-bottom: 0.5px solid lightgrey;
-  padding: 0 5px 20px 5px;
   font-size: 12px;
   margin: 0 5px 0 5px;
+  padding: 0 5px 0 5px;
 `;
 
 const StyledForm = styled.form`
@@ -77,6 +90,19 @@ const StyledForm = styled.form`
 
 const Logo = () => {
   return <img src={logo} alt="Gesture Logo" height="50px" />;
+};
+
+const DeliveryImg = () => {
+  return <img src={deliveryImg} alt="Delivery icon" height="20px" />;
+};
+const ChangesImg = () => {
+  return <img src={changesImg} alt="Changes icon" height="20px" />;
+};
+const OrderImg = () => {
+  return <img src={orderImg} alt="Order icon" height="20px" />;
+};
+const ReceiptImg = () => {
+  return <img src={receiptImg} alt="Receipt icon" height="20px" />;
 };
 
 const App = () => {
@@ -142,7 +168,7 @@ const App = () => {
 
   useEffect(() => {
     fetch(
-      "https://us-central1-gesture-dev.cloudfunctions.net/track/orders/testerid"
+      `https://us-central1-gesture-dev.cloudfunctions.net/track/orders/${orderId}`
     )
       .then((res) => res.json())
       .then((res) => {
@@ -203,56 +229,40 @@ const App = () => {
       </div>
 
       <StyledHeaderText>
-        <img
-          width="20"
-          height="15"
-          padding="0 20 0 0"
-          src="https://www.svgrepo.com/show/101623/clock.svg"
-          alt="clock"
-        />
+        <OrderImg />
         &nbsp;
         <b>Order Status</b>
       </StyledHeaderText>
-      <StyledText>{statusText}</StyledText>
-      <StyledHeaderText>
-        <img
-          width="20"
-          height="20"
-          padding="0 20 0 0"
-          src="https://www.svgrepo.com/show/208422/delivery-truck-truck.svg"
-          alt="delivery truck"
-        />
+      <StyledText style={{ paddingBottom: "20px" }}>{statusText}</StyledText>
+      <StyledHeaderText
+        style={{
+          borderTop: "0.5px solid lightgrey",
+        }}
+      >
+        <DeliveryImg />
         &nbsp;
         <b>Delivery Details</b>
       </StyledHeaderText>
       <StyledHeaderText>
         <b>Sender</b>
       </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        {sendName}
-      </StyledText>
+      <StyledText>{sendName}</StyledText>
       <StyledHeaderText>
         <strong>Recipient</strong>
       </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        {recName}
-      </StyledText>
+      <StyledText style={{ paddingBottom: "0px" }}>{recName}</StyledText>
       <StyledHeaderText>
         <b>Product Name</b>
       </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        {productName}
-      </StyledText>
+      <StyledText style={{ paddingBottom: "0px" }}>{productName}</StyledText>
       <StyledHeaderText>
         <b>Drop Off Name</b>
       </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        {dropoffName}
-      </StyledText>
+      <StyledText style={{ paddingBottom: "0px" }}>{dropoffName}</StyledText>
       <StyledHeaderText>
         <b>Order Time</b>
       </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+      <StyledText style={{ paddingBottom: "0px" }}>
         {orderTime
           ? Intl.DateTimeFormat(navigator.language, {
               weekday: "long",
@@ -267,7 +277,7 @@ const App = () => {
       <StyledHeaderText>
         <b>Delivery Time</b>
       </StyledHeaderText>
-      <StyledText>
+      <StyledText style={{ paddingBottom: "20px" }}>
         {delTime
           ? Intl.DateTimeFormat(navigator.language, {
               weekday: "long",
@@ -279,27 +289,20 @@ const App = () => {
             }).format(new Date(delTime))
           : "-"}
       </StyledText>
-      <StyledHeaderText>
-        <img
-          width="15"
-          height="15"
-          padding="0 20 0 0"
-          src="https://www.svgrepo.com/show/223681/receipt.svg"
-          alt="receipt"
-        />
+      <StyledHeaderText
+        style={{
+          borderTop: "0.5px solid lightgrey",
+        }}
+      >
+        <ReceiptImg />
         &nbsp;
         <b>Receipt</b>
       </StyledHeaderText>
-      <StyledHeaderText>
-        <b>Order Total</b>
-      </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-        {typeof total == "number" ? `$${total.toFixed(2)}` : "-"}
-      </StyledText>
+
       <StyledHeaderText>
         <b>Product Amount</b>
       </StyledHeaderText>
-      <StyledText style={{ border: "none", paddingBottom: "0px" }}>
+      <StyledText>
         {typeof productAmount == "number"
           ? `$${productAmount.toFixed(2)}`
           : "-"}
@@ -309,9 +312,7 @@ const App = () => {
           <StyledHeaderText>
             <b>Coupon Amount</b>
           </StyledHeaderText>
-          <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-            ${couponAmount.toFixed(2)}
-          </StyledText>
+          <StyledText>${couponAmount.toFixed(2)}</StyledText>
         </>
       )}
       {creditAmount === "-" || !creditAmount ? null : (
@@ -319,19 +320,22 @@ const App = () => {
           <StyledHeaderText>
             <b>Credit Amount</b>
           </StyledHeaderText>
-          <StyledText style={{ border: "none", paddingBottom: "0px" }}>
-            ${creditAmount.toFixed(2)}
-          </StyledText>
+          <StyledText>${creditAmount.toFixed(2)}</StyledText>
         </>
       )}
       <StyledHeaderText>
-        <img
-          width="20"
-          height="15"
-          padding="0 20 0 0"
-          src="https://www.svgrepo.com/show/104987/question-mark-button.svg"
-          alt="question mark"
-        />
+        <b>Order Total</b>
+      </StyledHeaderText>
+      <StyledText style={{ paddingBottom: "0px" }}>
+        <b>{typeof total == "number" ? `$${total.toFixed(2)}` : "-"}</b>
+      </StyledText>
+      <StyledHeaderText
+        style={{
+          borderTop: "0.5px solid lightgrey",
+          marginTop: "20px",
+        }}
+      >
+        <ChangesImg />
         &nbsp;
         <b>Request Changes</b>
       </StyledHeaderText>
