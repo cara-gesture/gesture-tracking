@@ -307,6 +307,18 @@ const App = () => {
           ? `$${productAmount.toFixed(2)}`
           : "-"}
       </StyledText>
+      <StyledHeaderText>
+        <b>Service Fee</b>
+      </StyledHeaderText>
+      <StyledText>
+        {typeof serviceFee == "number" ? `$${serviceFee.toFixed(2)}` : "-"}
+      </StyledText>
+      <StyledHeaderText>
+        <b>Tip</b>
+      </StyledHeaderText>
+      <StyledText>
+        {typeof tip == "number" ? `$${tip.toFixed(2)}` : "-"}
+      </StyledText>
       {couponAmount === "-" || !couponAmount ? null : (
         <>
           <StyledHeaderText>
