@@ -6,10 +6,12 @@ import deliveryImg from "./deliveryImg.png";
 import changesImg from "./changesImg.png";
 import orderImg from "./orderImg.png";
 import receiptImg from "./receiptImg.png";
+import { Link } from "react-router-dom";
 
 let search = window.location.search;
 let params = new URLSearchParams(search);
 let orderId = params.get("orderId");
+let tokenId = params.get("token");
 
 //this conditional is for testing only
 if (orderId === null) {
@@ -207,12 +209,27 @@ const App = () => {
           flexWrap: "nowrap",
           flexBasis: 1,
           width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "10px 0 10px 0",
+          margin: "10px 0 10px 10px",
         }}
       >
-        <Logo />
+        <div
+          style={{
+            display: "flex",
+            color: "#8585ff",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
+          <Link
+            to={`/history/?token=${tokenId}`}
+            style={{ textDecoration: "none", color: "#8585ff" }}
+          >
+            <i className="fas fa-chevron-circle-left fa-2x"></i>
+          </Link>
+        </div>
+        <div style={{ marginLeft: "45vw" }}>
+          <Logo />
+        </div>
       </div>
 
       <div
