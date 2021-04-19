@@ -49,8 +49,8 @@ const MapContainer = (props) => {
       setDropLng(-74.0017082356);
     }
     setPoints([
-      { lat: runLat + 0.002, lng: runLng },
-      { lat: dropLat + 0.005, lng: dropLng },
+      { lat: runLat, lng: runLng },
+      { lat: dropLat, lng: dropLng },
     ]);
   }, [
     props.runLoc,

@@ -140,7 +140,7 @@ const App = () => {
             setRunLoc(res.data.runnerLocation);
           }
         });
-    }, 3000);
+    }, 15000);
   }
 
   // const handleChange = (e) => {
