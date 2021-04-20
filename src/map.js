@@ -21,10 +21,11 @@ const MapContainer = (props) => {
   const [runLng, setRunLng] = useState(-74.0017082356);
   const [dropLat, setDropLat] = useState(40.749419041103586);
   const [dropLng, setDropLng] = useState(-74.0017082356);
-  const [initCenter] = useState({
-    lat: runLat,
-    lng: runLng,
-  });
+  const initCenter = {
+    lat: 40.749419041103586,
+    lng: -74.0017082356,
+  };
+
   const [points, setPoints] = useState([
     { lat: 40.749419041103586, lng: -74.0017082356 },
     { lat: 40.749419041103586, lng: -74.0017082356 },
@@ -49,8 +50,14 @@ const MapContainer = (props) => {
       setDropLng(-74.0017082356);
     }
     setPoints([
-      { lat: runLat, lng: runLng },
-      { lat: dropLat, lng: dropLng },
+      {
+        lat: runLat > dropLat + 0.0002 ? runLat + 0.0004 : runLat,
+        lng: runLng > dropLng + 0.0002 ? runLng + 0.0005 : runLng,
+      },
+      {
+        lat: dropLat > runLat + 0.0002 ? dropLat + 0.0004 : dropLat,
+        lng: runLng < dropLng + 0.0002 ? dropLng + 0.00053 : dropLng,
+      },
     ]);
   }, [
     props.runLoc,
@@ -131,7 +138,7 @@ const MapContainer = (props) => {
       style={mapStyles}
       scrollwheel={false}
       gestureHandling={"none"}
-      initialCenter={initCenter}
+      center={initCenter}
     >
       <Marker
         label={{

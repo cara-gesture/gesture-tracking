@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MapContainer from "./map";
-import logo from "./logo.png";
+import NavBar from "./NavBar";
 import deliveryImg from "./deliveryImg.png";
 import changesImg from "./changesImg.png";
 import orderImg from "./orderImg.png";
 import receiptImg from "./receiptImg.png";
-import { Link } from "react-router-dom";
 
 let search = window.location.search;
 let params = new URLSearchParams(search);
 let orderId = params.get("orderId");
-let tokenId = params.get("token");
 
 //this conditional is for testing only
 if (orderId === null) {
@@ -90,10 +88,6 @@ const StyledForm = styled.form`
   margin: 0 5px 0 5px;
 `;
 
-const Logo = () => {
-  return <img src={logo} alt="Gesture Logo" height="50px" />;
-};
-
 const DeliveryImg = () => {
   return <img src={deliveryImg} alt="Delivery icon" height="20px" />;
 };
@@ -127,21 +121,27 @@ const Track = () => {
   const [orderTime, setOrderTime] = useState(null);
   const [runnerId, setRunnerId] = useState("");
 
-  if (track === true) {
-    setInterval(() => {
-      fetch(
-        `https://us-central1-gesture-dev.cloudfunctions.net/track/runners/${runnerId}`
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.data.runnerLocation !== runLoc) {
-            //create clear interval logic
+  useEffect(() => {
+    const getRunner = setInterval(() => {
+      if (track === true && runnerId.length > 0) {
+        console.log(track, runnerId);
+        fetch(
+          `https://us-central1-gesture-dev.cloudfunctions.net/track/runners/${runnerId}`
+        )
+          .then((res) => res.json())
+          .then((res) => {
             console.log("runner:", res.data);
-            setRunLoc(res.data.runnerLocation);
-          }
-        });
+            if (res.data.runnerLocation !== runLoc) {
+              //create clear interval logic
+
+              setRunLoc(res.data.runnerLocation);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
     }, 15000);
-  }
+    return () => clearInterval(getRunner);
+  }, [track, runnerId, runLoc]);
 
   // const handleChange = (e) => {
   //   setText(e.target.value);
@@ -202,36 +202,7 @@ const Track = () => {
 
   return (
     <StyledPage>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "nowrap",
-          flexBasis: 1,
-          width: "100%",
-          margin: "10px 0 10px 10px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            color: "#8585ff",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
-        >
-          <Link
-            to={`/history/?token=${tokenId}`}
-            style={{ textDecoration: "none", color: "#8585ff" }}
-          >
-            <i className="fas fa-chevron-circle-left fa-2x"></i>
-          </Link>
-        </div>
-        <div style={{ marginLeft: "45vw" }}>
-          <Logo />
-        </div>
-      </div>
-
+      <NavBar />
       <div
         style={{
           display: "flex",
