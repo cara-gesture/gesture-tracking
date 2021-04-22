@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Redirect, Route } from "react-router-dom";
-import Track from "./Track.js";
+import Track from "./components/Track.js";
 
 const App = () => {
   return (

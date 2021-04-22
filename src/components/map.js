@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from "google-maps-react";
 import mapStyle from "./GoogleMapStyle";
-import PinBlue from "./PinBlue.png";
-import PinGold from "./PinGold.png";
+import PinBlue from "../assets/PinBlue.png";
+import PinGold from "../assets/PinGold.png";
 /*global google*/
 
 const mapStyles = {

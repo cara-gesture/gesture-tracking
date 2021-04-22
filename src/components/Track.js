@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MapContainer from "./map";
 import NavBar from "./NavBar";
-import deliveryImg from "./deliveryImg.png";
-import changesImg from "./changesImg.png";
-import orderImg from "./orderImg.png";
-import receiptImg from "./receiptImg.png";
+import deliveryImg from "../assets/deliveryImg.png";
+import changesImg from "../assets/changesImg.png";
+import orderImg from "../assets/orderImg.png";
+import receiptImg from "../assets/receiptImg.png";
+import ClipLoader from "react-spinners/ClipLoader";
 
 let search = window.location.search;
 let params = new URLSearchParams(search);
 let orderId = params.get("orderId");
+let appBar = params.get("appbar") || "false";
+let view = params.get("view");
 
 //this conditional is for testing only
 if (orderId === null) {
@@ -120,6 +123,7 @@ const Track = () => {
   const [text, setText] = useState("");
   const [orderTime, setOrderTime] = useState(null);
   const [runnerId, setRunnerId] = useState("");
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const getRunner = setInterval(() => {
@@ -196,158 +200,179 @@ const Track = () => {
         setTip(res.data.tip);
         setOrderTime(res.data.timeOrderPlaced);
         setRunnerId(res.data.runnerId);
+        setLoaded(true);
       })
       .catch((err) => console.log(err));
   }, []);
 
   return (
     <StyledPage>
-      <NavBar />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          width: "100%",
-          height: "50vh",
-          minWidth: "50vw",
-          minHeight: "50vh",
-        }}
-      >
-        <MapContainer runLoc={runLoc} dropLoc={dropLoc} track={track} />
-      </div>
-
-      <StyledHeaderText>
-        <OrderImg />
-        &nbsp;
-        <b>Order Status</b>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "20px" }}>{statusText}</StyledText>
-      <StyledHeaderText
-        style={{
-          borderTop: "0.5px solid lightgrey",
-        }}
-      >
-        <DeliveryImg />
-        &nbsp;
-        <b>Delivery Details</b>
-      </StyledHeaderText>
-      <StyledHeaderText>
-        <b>Sender</b>
-      </StyledHeaderText>
-      <StyledText>{sendName}</StyledText>
-      <StyledHeaderText>
-        <strong>Recipient</strong>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "0px" }}>{recName}</StyledText>
-      <StyledHeaderText>
-        <b>Product Name</b>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "0px" }}>{productName}</StyledText>
-      <StyledHeaderText>
-        <b>Drop Off Name</b>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "0px" }}>{dropoffName}</StyledText>
-      <StyledHeaderText>
-        <b>Order Time</b>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "0px" }}>
-        {orderTime
-          ? Intl.DateTimeFormat(navigator.language, {
-              weekday: "long",
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }).format(new Date(orderTime))
-          : "-"}
-      </StyledText>
-      <StyledHeaderText>
-        <b>Delivery Time</b>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "20px" }}>
-        {delTime
-          ? Intl.DateTimeFormat(navigator.language, {
-              weekday: "long",
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            }).format(new Date(delTime))
-          : "-"}
-      </StyledText>
-      <StyledHeaderText
-        style={{
-          borderTop: "0.5px solid lightgrey",
-        }}
-      >
-        <ReceiptImg />
-        &nbsp;
-        <b>Receipt</b>
-      </StyledHeaderText>
-
-      <StyledHeaderText>
-        <b>Product Amount</b>
-      </StyledHeaderText>
-      <StyledText>
-        {typeof productAmount == "number"
-          ? `$${productAmount.toFixed(2)}`
-          : "-"}
-      </StyledText>
-      <StyledHeaderText>
-        <b>Service Fee</b>
-      </StyledHeaderText>
-      <StyledText>
-        {typeof serviceFee == "number" ? `$${serviceFee.toFixed(2)}` : "-"}
-      </StyledText>
-      <StyledHeaderText>
-        <b>Tip</b>
-      </StyledHeaderText>
-      <StyledText>
-        {typeof tip == "number" ? `$${tip.toFixed(2)}` : "-"}
-      </StyledText>
-      {couponAmount === "-" || !couponAmount ? null : (
+      {appBar == "true" ? <NavBar /> : <div></div>}
+      {!loaded ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "45vh",
+          }}
+        >
+          <ClipLoader size={100} color="#8585ff" />
+        </div>
+      ) : (
         <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              height: "50vh",
+              minWidth: "50vw",
+              minHeight: "50vh",
+            }}
+          >
+            <MapContainer runLoc={runLoc} dropLoc={dropLoc} track={track} />
+          </div>
+
           <StyledHeaderText>
-            <b>Coupon Amount</b>
+            <OrderImg />
+            &nbsp;
+            <b>Order Status</b>
           </StyledHeaderText>
-          <StyledText>${couponAmount.toFixed(2)}</StyledText>
+          <StyledText style={{ paddingBottom: "20px" }}>
+            {statusText}
+          </StyledText>
+          <StyledHeaderText
+            style={{
+              borderTop: "0.5px solid lightgrey",
+            }}
+          >
+            <DeliveryImg />
+            &nbsp;
+            <b>Delivery Details</b>
+          </StyledHeaderText>
+          <StyledHeaderText>
+            <b>Sender</b>
+          </StyledHeaderText>
+          <StyledText>{sendName}</StyledText>
+          <StyledHeaderText>
+            <strong>Recipient</strong>
+          </StyledHeaderText>
+          <StyledText style={{ paddingBottom: "0px" }}>{recName}</StyledText>
+          <StyledHeaderText>
+            <b>Product Name</b>
+          </StyledHeaderText>
+          <StyledText style={{ paddingBottom: "0px" }}>
+            {productName}
+          </StyledText>
+          <StyledHeaderText>
+            <b>Drop Off Name</b>
+          </StyledHeaderText>
+          <StyledText style={{ paddingBottom: "0px" }}>
+            {dropoffName}
+          </StyledText>
+          <StyledHeaderText>
+            <b>Order Time</b>
+          </StyledHeaderText>
+          <StyledText style={{ paddingBottom: "0px" }}>
+            {orderTime
+              ? Intl.DateTimeFormat(navigator.language, {
+                  weekday: "long",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                }).format(new Date(orderTime))
+              : "-"}
+          </StyledText>
+          <StyledHeaderText>
+            <b>Delivery Time</b>
+          </StyledHeaderText>
+          <StyledText style={{ paddingBottom: "20px" }}>
+            {delTime
+              ? Intl.DateTimeFormat(navigator.language, {
+                  weekday: "long",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                }).format(new Date(delTime))
+              : "-"}
+          </StyledText>
+          <StyledHeaderText
+            style={{
+              borderTop: "0.5px solid lightgrey",
+            }}
+          >
+            <ReceiptImg />
+            &nbsp;
+            <b>Receipt</b>
+          </StyledHeaderText>
+
+          <StyledHeaderText>
+            <b>Product Amount</b>
+          </StyledHeaderText>
+          <StyledText>
+            {typeof productAmount == "number"
+              ? `$${productAmount.toFixed(2)}`
+              : "-"}
+          </StyledText>
+          <StyledHeaderText>
+            <b>Service Fee</b>
+          </StyledHeaderText>
+          <StyledText>
+            {typeof serviceFee == "number" ? `$${serviceFee.toFixed(2)}` : "-"}
+          </StyledText>
+          <StyledHeaderText>
+            <b>Tip</b>
+          </StyledHeaderText>
+          <StyledText>
+            {typeof tip == "number" ? `$${tip.toFixed(2)}` : "-"}
+          </StyledText>
+          {couponAmount === "-" || !couponAmount ? null : (
+            <>
+              <StyledHeaderText>
+                <b>Coupon Amount</b>
+              </StyledHeaderText>
+              <StyledText>${couponAmount.toFixed(2)}</StyledText>
+            </>
+          )}
+          {creditAmount === "-" || !creditAmount ? null : (
+            <>
+              <StyledHeaderText>
+                <b>Credit Amount</b>
+              </StyledHeaderText>
+              <StyledText>${creditAmount.toFixed(2)}</StyledText>
+            </>
+          )}
+          <StyledHeaderText>
+            <b>Order Total</b>
+          </StyledHeaderText>
+          <StyledText style={{ paddingBottom: "0px" }}>
+            <b>{typeof total == "number" ? `$${total.toFixed(2)}` : "-"}</b>
+          </StyledText>
+          <StyledHeaderText
+            style={{
+              borderTop: "0.5px solid lightgrey",
+              marginTop: "20px",
+            }}
+          >
+            <ChangesImg />
+            &nbsp;
+            <b>Request Changes</b>
+          </StyledHeaderText>
+          <StyledForm>
+            <StyledInput
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            ></StyledInput>
+            <StyledButton onClick={handleSubmit} type="submit">
+              Submit
+            </StyledButton>
+          </StyledForm>
         </>
       )}
-      {creditAmount === "-" || !creditAmount ? null : (
-        <>
-          <StyledHeaderText>
-            <b>Credit Amount</b>
-          </StyledHeaderText>
-          <StyledText>${creditAmount.toFixed(2)}</StyledText>
-        </>
-      )}
-      <StyledHeaderText>
-        <b>Order Total</b>
-      </StyledHeaderText>
-      <StyledText style={{ paddingBottom: "0px" }}>
-        <b>{typeof total == "number" ? `$${total.toFixed(2)}` : "-"}</b>
-      </StyledText>
-      <StyledHeaderText
-        style={{
-          borderTop: "0.5px solid lightgrey",
-          marginTop: "20px",
-        }}
-      >
-        <ChangesImg />
-        &nbsp;
-        <b>Request Changes</b>
-      </StyledHeaderText>
-      <StyledForm>
-        <StyledInput
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        ></StyledInput>
-        <StyledButton onClick={handleSubmit} type="submit">
-          Submit
-        </StyledButton>
-      </StyledForm>
     </StyledPage>
   );
 };
